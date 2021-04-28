@@ -20,11 +20,11 @@ const buildControls = (props) => {
                     addIng={() => props.ingredientAdded(ctrl.type)}
                     subIng={() => props.ingredientSub(ctrl.type)}
                     disabled={props.disabled[ctrl.type]}
-                    // addIng={props.ingredientAdded}
-                    // subIng={props.ingredientSub}
                 />
             ))}
-            <button className={styles.OrderButton} disabled={(props.price <= 20)}>ORDER NOW</button>
+            <button className={styles.OrderButton} disabled={(props.price <= 20)} onClick={props.ordered}>
+                ORDER NOW
+            </button>
         </div>
     );
 }
