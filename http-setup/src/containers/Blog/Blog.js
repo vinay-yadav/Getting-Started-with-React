@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import axios from "axios";
+// import axios from "axios";
+import axios from "../../axios";
 
 import Post from '../../components/Post/Post';
 import FullPost from '../../components/FullPost/FullPost';
@@ -9,14 +10,15 @@ import './Blog.css';
 class Blog extends Component {
     state = {
         posts: [],
-        selectedPostId: null
+        selectedPostId: null,
+        error: false
     }
 
     componentDidMount() {
-        axios.get('https://jsonplaceholder.typicode.com/posts')
+        axios.get('/posts')
             .then(response => {
                 // console.log(response);
-                const posts = response.data.slice(0, 4);
+                const posts = response.data.slice(0, 8);
                 const updatedPost = posts.map(post => {
                     return {
                         ...post,
@@ -25,7 +27,10 @@ class Blog extends Component {
                 })
                 this.setState({posts: updatedPost});
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                this.setState({error: true});
+                console.log(err);
+            });
     }
 
     postSelectedHandler = (id) => {
@@ -33,14 +38,18 @@ class Blog extends Component {
     }
 
     render() {
-        const posts = this.state.posts.map(element => {
-            return <Post
-                key={element.id}
-                title={element.title}
-                author={element.author}
-                clicked={() => this.postSelectedHandler(element.id)}
-            />
-        })
+        let posts = <p>Something went wrong</p>;
+
+        if (!this.state.error) {
+            posts = this.state.posts.map(element => {
+                return <Post
+                    key={element.id}
+                    title={element.title}
+                    author={element.author}
+                    clicked={() => this.postSelectedHandler(element.id)}
+                />
+            })
+        }
 
         return (
             <div>
