@@ -8,28 +8,17 @@ import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/WithErrorhandler';
 import {connect} from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as reducerActionCreator from '../../store/actions/index';
 
 
 class BurgerBuilder extends Component {
     state = {
-        totalPrice: 20,
         purchasing: false,
-        loading: false,
-        error: false
     }
 
-    // componentDidMount() {
-    //    axios.get('/ingredients.json')
-    //         .then(response => {
-    //             console.log(response);
-    //             this.setState({ingredients: response.data});
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //             this.setState({error: true})
-    //         });
-    // }
+    componentDidMount() {
+        this.props.setIngredients();
+    }
 
     // addIngredientHandler = (type) => {
     //     const oldCount = this.state.ingredients[type];
@@ -70,6 +59,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
         // const queryParams = [];
         // for(let i in this.state.ingredients){
@@ -92,7 +82,7 @@ class BurgerBuilder extends Component {
 
         let orderSummary = null;
 
-        let burger = this.state.error ? <p>Ingredients can't load</p> : <Spinner/>;
+        let burger = this.props.error ? <p>Ingredients can't load</p> : <Spinner/>;
 
         if (this.props.ingS) {
             burger = (
@@ -115,9 +105,9 @@ class BurgerBuilder extends Component {
             />
         }
 
-        if (this.state.loading) {
-            orderSummary = <Spinner/>;
-        }
+        // if (this.state.loading) {
+        //     orderSummary = <Spinner/>;
+        // }
 
 
         return (
@@ -133,15 +123,18 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
     return {
-        ingS: state.ingredients,
-        price: state.totalPrice
+        ingS: state.burger.ingredients,
+        price: state.burger.totalPrice,
+        error: state.burger.error
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdd: (ingredient) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingredient}),
-        onIngredientRemove: (ingredient) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingredient})
+        onIngredientAdd: (ingredient) => dispatch(reducerActionCreator.addIngredient(ingredient)),
+        onIngredientRemove: (ingredient) => dispatch(reducerActionCreator.removeIngredient(ingredient)),
+        setIngredients: () => dispatch(reducerActionCreator.initIngredients()),
+        onInitPurchase: () => dispatch(reducerActionCreator.purchaseInit())
     }
 }
 

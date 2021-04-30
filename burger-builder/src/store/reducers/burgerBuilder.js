@@ -1,4 +1,4 @@
-import * as actionTypes from './actions';
+import * as actionTypes from '../actions/actionTypes';
 
 
 const INGREDIENTS_PRICES = {
@@ -9,26 +9,29 @@ const INGREDIENTS_PRICES = {
 }
 
 const initialState = {
-    ingredients: {
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0
-    },
-    totalPrice: 20
+    ingredients: null,
+    totalPrice: 20,
+    error: false
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case (actionTypes.ADD_INGREDIENT):
-            return {
-                ...state,
+            return actionTypes.updateObject(state, {
                 ingredients: {
                     ...state.ingredients,
                     [action.ingredientName]: state.ingredients[action.ingredientName] + 1
                 },
                 totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredientName]
-            }
+            })
+            // return {
+            //     ...state,
+            //     ingredients: {
+            //         ...state.ingredients,
+            //         [action.ingredientName]: state.ingredients[action.ingredientName] + 1
+            //     },
+            //     totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredientName]
+            // }
         case (actionTypes.REMOVE_INGREDIENT):
             if(state.ingredients[action.ingredientName] < 1)
                 return state;
@@ -39,6 +42,18 @@ const reducer = (state = initialState, action) => {
                     [action.ingredientName]: state.ingredients[action.ingredientName] - 1
                 },
                 totalPrice: state.totalPrice - INGREDIENTS_PRICES[action.ingredientName]
+            }
+        case (actionTypes.FETCH_INGREDIENTS_FAILS):
+            return {
+                ...state,
+                error: true
+            }
+        case (actionTypes.SET_INGREDIENT):
+            return {
+                ...state,
+                ingredients: action.ingredients,
+                error: false,
+                totalPrice: 20
             }
         default:
             return state;
