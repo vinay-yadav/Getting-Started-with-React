@@ -8,7 +8,7 @@ import * as orderReducer from '../../store/actions/index';
 
 class Orders extends Component {
     componentDidMount() {
-        this.props.onFetchOrders(this.props.token);
+        this.props.onFetchOrders(this.props.token, this.props.userId);
         // axios.get('/orders.json')
         //     .then(response => {
         //         const fetchedOrders = [];
@@ -48,13 +48,14 @@ const mapStateToProps = state => {
     return {
         orders: state.order.orders,
         loading: state.order.loading,
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchOrders: (token) => dispatch(orderReducer.fetchOrders(token))
+        onFetchOrders: (token, userId) => dispatch(orderReducer.fetchOrders(token, userId))
     }
 }
 

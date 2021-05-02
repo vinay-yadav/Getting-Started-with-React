@@ -9,6 +9,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/WithErrorhandler';
 import {connect} from 'react-redux';
 import * as reducerActionCreator from '../../store/actions/index';
+import * as actions from "../../store/actions";
 
 
 class BurgerBuilder extends Component {
@@ -51,7 +52,13 @@ class BurgerBuilder extends Component {
     // }
 
     purchaseHandler = () => {
-        this.setState({purchasing: true});
+        if (this.props.isAuth) {
+            this.setState({purchasing: true});
+        }
+        else {
+            this.props.setAuthRedirect('/checkout');
+            this.props.history.push('/auth');
+        }
     }
 
     purchaseCancelHandler = () => {
@@ -93,6 +100,7 @@ class BurgerBuilder extends Component {
                         ingredientSub={this.props.onIngredientRemove}
                         disabled={disableInfo}
                         price={this.props.price}
+                        isAuth={this.props.isAuth}
                         ordered={this.purchaseHandler}
                     />
                 </Aux>
@@ -125,7 +133,8 @@ const mapStateToProps = state => {
     return {
         ingS: state.burger.ingredients,
         price: state.burger.totalPrice,
-        error: state.burger.error
+        error: state.burger.error,
+        isAuth: state.auth.token !== null
     }
 }
 
@@ -134,7 +143,8 @@ const mapDispatchToProps = dispatch => {
         onIngredientAdd: (ingredient) => dispatch(reducerActionCreator.addIngredient(ingredient)),
         onIngredientRemove: (ingredient) => dispatch(reducerActionCreator.removeIngredient(ingredient)),
         setIngredients: () => dispatch(reducerActionCreator.initIngredients()),
-        onInitPurchase: () => dispatch(reducerActionCreator.purchaseInit())
+        onInitPurchase: () => dispatch(reducerActionCreator.purchaseInit()),
+        setAuthRedirect: (path) => dispatch(actions.setAuthRedirect(path))
     }
 }
 

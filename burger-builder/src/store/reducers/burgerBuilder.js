@@ -11,7 +11,8 @@ const INGREDIENTS_PRICES = {
 const initialState = {
     ingredients: null,
     totalPrice: 20,
-    error: false
+    error: false,
+    building: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -22,7 +23,8 @@ const reducer = (state = initialState, action) => {
                     ...state.ingredients,
                     [action.ingredientName]: state.ingredients[action.ingredientName] + 1
                 },
-                totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredientName]
+                totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredientName],
+                building: true
             })
             // return {
             //     ...state,
@@ -41,7 +43,8 @@ const reducer = (state = initialState, action) => {
                     ...state.ingredients,
                     [action.ingredientName]: state.ingredients[action.ingredientName] - 1
                 },
-                totalPrice: state.totalPrice - INGREDIENTS_PRICES[action.ingredientName]
+                totalPrice: state.totalPrice - INGREDIENTS_PRICES[action.ingredientName],
+                building: true
             }
         case (actionTypes.FETCH_INGREDIENTS_FAILS):
             return {
@@ -53,7 +56,8 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 ingredients: action.ingredients,
                 error: false,
-                totalPrice: 20
+                totalPrice: 20,
+                building: false
             }
         default:
             return state;
